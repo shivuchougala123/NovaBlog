@@ -10,14 +10,24 @@ const Blog = require('./models/Blog')
 const Comment = require('./models/Comment')
 const authMiddleware = require('./middleware/auth')
 
+// Create Express app (only once)
 const app = express()
-app.use(cors())
+
+// Enable CORS for your deployed frontend
+app.use(cors({
+  origin: "https://novablog-1.onrender.com", // your frontend URL
+  credentials: true
+}))
+
+// Parse JSON request bodies
 app.use(express.json())
 
+// Environment variables
 const PORT = process.env.PORT || 4000
 const MONGO_URI = process.env.MONGO_URI
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me'
 
+// MongoDB connection
 if (!MONGO_URI) {
   console.error('Missing MONGO_URI in environment variables')
   process.exit(1)
@@ -27,25 +37,22 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => { console.error('MongoDB connection error:', err); process.exit(1) })
 
-// Signup route
+// ------------------- Routes ------------------- //
+
+// Signup
 app.post('/signup', async (req, res) => {
   try {
     const { email, password, name } = req.body || {}
 
-    // Basic validation
     if (!email || !password) return res.status(400).json({ error: 'Email and password are required' })
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' })
     if (typeof password !== 'string' || password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' })
 
-    // Check existing user
     const existing = await User.findOne({ email })
     if (existing) return res.status(409).json({ error: 'Email already registered' })
 
-    // Hash password
-    const saltRounds = 10
-    const hashed = await bcrypt.hash(password, saltRounds)
-
+    const hashed = await bcrypt.hash(password, 10)
     const user = new User({ email, password: hashed, name })
     await user.save()
 
@@ -55,12 +62,10 @@ app.post('/signup', async (req, res) => {
     return res.status(500).json({ error: 'Server error' })
   }
 })
-console.log('here');
-// Signin route
+
+// Signin
 app.post('/signin', async (req, res) => {
   try {
-
-
     const { email, password } = req.body || {}
     if (!email || !password) return res.status(400).json({ error: 'Email and password are required' })
 
@@ -80,22 +85,16 @@ app.post('/signin', async (req, res) => {
   }
 })
 
-// Logout route (client-side token clearing)
+// Logout (stateless JWT)
 app.post('/logout', (req, res) => {
-  // Since JWT is stateless, we just return success
-  // The client will remove the token from localStorage
   return res.json({ message: 'Logged out successfully' })
 })
 
-// Create blog route (authenticated)
+// Create blog (authenticated)
 app.post('/create-blog', authMiddleware, async (req, res) => {
   try {
     const { title, thumbnailUrl, tags, description } = req.body || {}
-
-    // Validation
-    if (!title || !description) {
-      return res.status(400).json({ error: 'Title and description are required' })
-    }
+    if (!title || !description) return res.status(400).json({ error: 'Title and description are required' })
 
     const blog = new Blog({
       title,
@@ -104,7 +103,6 @@ app.post('/create-blog', authMiddleware, async (req, res) => {
       description,
       userId: req.user.id
     })
-
     await blog.save()
 
     return res.status(201).json({ message: 'Blog created', blog })
@@ -134,7 +132,6 @@ app.get('/blogs', async (req, res) => {
     const blogs = await Blog.find()
       .sort({ createdAt: -1 })
       .populate('userId', 'name email')
-      
     return res.json({ blogs })
   } catch (err) {
     console.error('Get blogs error', err)
@@ -142,17 +139,11 @@ app.get('/blogs', async (req, res) => {
   }
 })
 
-// Get single blog by ID (public)
+// Get single blog by ID
 app.get('/blog/:id', async (req, res) => {
-  
   try {
-    const blog = await Blog.findById(req.params.id)
-      .populate('userId', 'name email')
-    
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' })
-    }
-
+    const blog = await Blog.findById(req.params.id).populate('userId', 'name email')
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
     return res.json({ blog })
   } catch (err) {
     console.error('Get blog error', err)
@@ -164,18 +155,10 @@ app.get('/blog/:id', async (req, res) => {
 app.put('/update-blog/:id', authMiddleware, async (req, res) => {
   try {
     const { title, thumbnailUrl, tags, description } = req.body || {}
-
-    // Find blog and verify ownership
     const blog = await Blog.findById(req.params.id)
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' })
-    }
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
+    if (blog.userId.toString() !== req.user.id) return res.status(403).json({ error: 'Not authorized to update this blog' })
 
-    if (blog.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: 'Not authorized to update this blog' })
-    }
-
-    // Update fields
     if (title !== undefined) blog.title = title
     if (thumbnailUrl !== undefined) blog.thumbnailUrl = thumbnailUrl
     if (tags !== undefined) blog.tags = Array.isArray(tags) ? tags : []
@@ -183,7 +166,6 @@ app.put('/update-blog/:id', authMiddleware, async (req, res) => {
     blog.updatedAt = Date.now()
 
     await blog.save()
-
     return res.json({ message: 'Blog updated', blog })
   } catch (err) {
     console.error('Update blog error', err)
@@ -195,16 +177,10 @@ app.put('/update-blog/:id', authMiddleware, async (req, res) => {
 app.delete('/delete-blog/:id', authMiddleware, async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id)
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' })
-    }
-
-    if (blog.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: 'Not authorized to delete this blog' })
-    }
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
+    if (blog.userId.toString() !== req.user.id) return res.status(403).json({ error: 'Not authorized to delete this blog' })
 
     await Blog.findByIdAndDelete(req.params.id)
-
     return res.json({ message: 'Blog deleted' })
   } catch (err) {
     console.error('Delete blog error', err)
@@ -212,35 +188,25 @@ app.delete('/delete-blog/:id', authMiddleware, async (req, res) => {
   }
 })
 
-// Post comment (authenticated)
+// Comments
 app.post('/comment/:blogId', authMiddleware, async (req, res) => {
   try {
     const { commentText } = req.body || {}
     const { blogId } = req.params
+    if (!commentText || !commentText.trim()) return res.status(400).json({ error: 'Comment text is required' })
 
-    if (!commentText || !commentText.trim()) {
-      return res.status(400).json({ error: 'Comment text is required' })
-    }
-
-    // Check if blog exists
     const blog = await Blog.findById(blogId)
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' })
-    }
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
 
-    // Get user info
     const user = await User.findById(req.user.id)
-    
     const comment = new Comment({
       blogId,
       userId: req.user.id,
       username: user.name || user.email,
       commentText: commentText.trim()
     })
-
     await comment.save()
 
-    // Increment comments count
     blog.commentsCount = (blog.commentsCount || 0) + 1
     await blog.save()
 
@@ -251,15 +217,11 @@ app.post('/comment/:blogId', authMiddleware, async (req, res) => {
   }
 })
 
-// Get comments for a blog (public)
 app.get('/comments/:blogId', async (req, res) => {
   try {
-    const { blogId } = req.params
-
-    const comments = await Comment.find({ blogId })
+    const comments = await Comment.find({ blogId: req.params.blogId })
       .sort({ createdAt: -1 })
       .populate('userId', 'name email')
-
     return res.json({ comments })
   } catch (err) {
     console.error('Get comments error', err)
@@ -267,46 +229,35 @@ app.get('/comments/:blogId', async (req, res) => {
   }
 })
 
-// Like/Unlike blog (authenticated)
+// Like/Unlike
 app.post('/like/:blogId', authMiddleware, async (req, res) => {
   try {
-    const { blogId } = req.params
+    const blog = await Blog.findById(req.params.blogId)
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
+
     const userId = req.user.id
-
-    const blog = await Blog.findById(blogId)
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' })
-    }
-
-    // Check if user already liked
     const hasLiked = blog.likes.includes(userId)
 
     if (hasLiked) {
-      // Unlike
       blog.likes = blog.likes.filter(id => id.toString() !== userId)
       blog.likesCount = blog.likes.length
     } else {
-      // Like
       blog.likes.push(userId)
       blog.likesCount = blog.likes.length
     }
 
     await blog.save()
-
-    return res.json({ 
-      message: hasLiked ? 'Blog unliked' : 'Blog liked',
-      liked: !hasLiked,
-      likesCount: blog.likesCount
-    })
+    return res.json({ message: hasLiked ? 'Blog unliked' : 'Blog liked', liked: !hasLiked, likesCount: blog.likesCount })
   } catch (err) {
     console.error('Like blog error', err)
     return res.status(500).json({ error: 'Server error' })
   }
 })
 
-// Health
+// Health check
 app.get('/', (req, res) => res.json({ status: 'ok' }))
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Auth server listening on port ${PORT}`)
 })

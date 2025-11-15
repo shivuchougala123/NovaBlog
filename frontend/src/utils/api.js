@@ -134,15 +134,3 @@ export async function toggleLike(blogId) {
 }
 
 
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-
-// Allow requests from your frontend
-app.use(cors({
-  origin: "https://novablog-1.onrender.com", // your frontend URL
-  credentials: true
-}));
-
-app.use(express.json());
