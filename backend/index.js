@@ -13,11 +13,15 @@ const authMiddleware = require('./middleware/auth')
 // Create Express app (only once)
 const app = express()
 
-// Enable CORS for your deployed frontend
+// Enable CORS for your deployed frontend.
+// Read allowed frontend origin from env so deployments can configure it.
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://novablog-1.onrender.com'
 app.use(cors({
-  origin: "https://novablog-1.onrender.com", // your frontend URL
+  origin: FRONTEND_URL,
   credentials: true
 }))
+
+console.log('Allowing CORS requests from:', FRONTEND_URL)
 
 // Parse JSON request bodies
 app.use(express.json())
