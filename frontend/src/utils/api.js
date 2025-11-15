@@ -1,4 +1,5 @@
-const API_BASE = 'process.env.REACT_APP_API_URL'
+// Read the API base from the build-time env var or fall back to localhost for dev
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000'
 
 function getAuthHeader() {
   const token = localStorage.getItem('novablog_token')
