@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle with gradient -->
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#2d2416;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d0804;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="borderGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b7620;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Outer border (gold) -->
+  <circle cx="100" cy="100" r="95" fill="url(#borderGradient)" />
+  
+  <!-- Main circle background -->
+  <circle cx="100" cy="100" r="85" fill="url(#bgGradient)" />
+  
+  <!-- Inner gold ring -->
+  <circle cx="100" cy="100" r="78" fill="none" stroke="#d4af37" stroke-width="3" opacity="0.6" />
+  
+  <!-- Center dark sphere effect -->
+  <circle cx="100" cy="100" r="65" fill="#1a1410" />
+  
+  <!-- Shine effect on sphere -->
+  <circle cx="85" cy="80" r="25" fill="#3d3228" opacity="0.4" />
+  
+  <!-- BLOG text -->
+  <text x="100" y="115" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">BLOG</text>
+</svg>
