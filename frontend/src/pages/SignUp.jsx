@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { signUp } from '../utils/api'
 
 export default function SignUp(){
   const [email, setEmail] = useState('')
@@ -15,15 +16,9 @@ export default function SignUp(){
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:4000/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name })
-      })
+      const data = await signUp(email, password, name)
 
-      const data = await response.json()
-
-      if (!response.ok) {
+      if (!data.message) {
         setError(data.error || 'Sign up failed')
         setLoading(false)
         return

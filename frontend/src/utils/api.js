@@ -15,6 +15,15 @@ export async function signIn(email, password) {
   return response.json()
 }
 
+export async function signUp(email, password, name) {
+  const response = await fetch(`${API_BASE}/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, name })
+  })
+  return response.json()
+}
+
 export async function createBlog(data) {
   const response = await fetch(`${API_BASE}/create-blog`, {
     method: 'POST',
