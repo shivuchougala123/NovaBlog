@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { setAuth } from '../utils/auth'
+import { signIn } from '../utils/api'
 
 export default function SignIn(){
   const [email, setEmail] = useState('')
@@ -15,15 +16,9 @@ export default function SignIn(){
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:4000/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+      const data = await signIn(email, password)
 
-      const data = await response.json()
-
-      if (!response.ok) {
+      if (!data.token) {
         setError(data.error || 'Sign in failed')
         setLoading(false)
         return

@@ -6,6 +6,15 @@ function getAuthHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+export async function signIn(email, password) {
+  const response = await fetch(`${API_BASE}/signin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  return response.json()
+}
+
 export async function createBlog(data) {
   const response = await fetch(`${API_BASE}/create-blog`, {
     method: 'POST',
