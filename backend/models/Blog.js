@@ -9,6 +9,7 @@ const blogSchema = new mongoose.Schema({
   likes: { type: [mongoose.Schema.Types.ObjectId], default: [] },
   likesCount: { type: Number, default: 0 },
   commentsCount: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 })

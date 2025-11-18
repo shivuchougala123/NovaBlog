@@ -77,6 +77,19 @@ export async function getBlogById(id) {
   return response.json()
 }
 
+export async function trackBlogView(id) {
+  try {
+    const response = await fetch(`${API_BASE}/blog/${id}/view`, {
+      method: 'POST'
+    })
+    if (response.ok) {
+      return await response.json()
+    }
+  } catch (err) {
+    console.error('Error tracking view:', err)
+  }
+}
+
 export async function updateBlog(id, data) {
   const response = await fetch(`${API_BASE}/update-blog/${id}`, {
     method: 'PUT',

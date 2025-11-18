@@ -155,6 +155,22 @@ app.get('/blog/:id', async (req, res) => {
   }
 })
 
+// Track blog view (increment views count)
+app.post('/blog/:id/view', async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+    if (!blog) return res.status(404).json({ error: 'Blog not found' })
+    return res.json({ views: blog.views })
+  } catch (err) {
+    console.error('View tracking error', err)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
 // Update blog (authenticated)
 app.put('/update-blog/:id', authMiddleware, async (req, res) => {
   try {

@@ -54,6 +54,9 @@ export default function BlogCard({ blog }) {
         </div>
         <div className="absolute bottom-2 right-2 flex items-center gap-2">
           <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-gray-700 font-semibold flex items-center gap-1">
+            👁️ {blog.views || 0}
+          </div>
+          <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-gray-700 font-semibold flex items-center gap-1">
             ❤️ {blog.likesCount || 0}
           </div>
           <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-gray-700 font-semibold flex items-center gap-1">

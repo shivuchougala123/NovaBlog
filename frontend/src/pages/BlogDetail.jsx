@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getBlogById, postComment, getComments, toggleLike } from '../utils/api'
+import { getBlogById, postComment, getComments, toggleLike, trackBlogView } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 
 export default function BlogDetail(){
@@ -23,6 +23,9 @@ export default function BlogDetail(){
         const { blog } = await getBlogById(id)
         setBlog(blog)
         setLikesCount(blog.likesCount || 0)
+        
+        // Track view
+        await trackBlogView(id)
         
         // Check if current user has liked (if logged in)
         if (isLoggedIn && blog.likes) {
