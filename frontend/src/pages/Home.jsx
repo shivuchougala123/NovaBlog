@@ -42,12 +42,6 @@ export default function Home(){
         <p className="text-lg text-gray-700 mb-4 max-w-2xl mx-auto">
           Discover amazing stories, share your thoughts, and connect with creators from around the world 🌍
         </p>
-        <Link 
-          to="/create" 
-          className="inline-block px-6 py-3 rounded-xl btn-glow text-base font-bold ripple"
-        >
-          🚀 Start Writing
-        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-4">
