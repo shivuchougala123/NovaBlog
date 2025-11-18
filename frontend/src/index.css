@@ -115,8 +115,8 @@ body {
 }
 
 .card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 15px 50px rgba(162,210,255,0.3), 0 8px 25px rgba(189,224,254,0.2);
+  transform: translateY(5px) scale(0.98);
+  box-shadow: 0 4px 15px rgba(162,210,255,0.2), 0 2px 8px rgba(189,224,254,0.1);
   border-color: rgba(162,210,255,0.5);
 }
 
@@ -152,6 +152,16 @@ input:focus, textarea:focus {
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
+}
+
+/* Special floating card with custom hover (scale up on hover) */
+.rounded-2xl.p-3.bg-gradient-blue.shadow-blue-soft.cursor-pointer.float {
+  transition: all 0.3s ease;
+}
+
+.rounded-2xl.p-3.bg-gradient-blue.shadow-blue-soft.cursor-pointer.float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px rgba(162,210,255,0.4);
 }
 
 /* Ripple effect */

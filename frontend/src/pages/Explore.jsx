@@ -69,7 +69,7 @@ export default function Explore() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header Section */}
-      <div className="card p-6 shadow-glow float">
+      <div className="card p-6 shadow-glow">
         <div className="text-center mb-6">
           <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-3">
             🔍 Explore Blogs
@@ -145,7 +145,7 @@ export default function Explore() {
 
       {/* Results Section */}
       {loading ? (
-        <div className="card p-12 text-center shadow-colorful">
+        <div className="card p-12 text-center shadow-glow">
           <div className="text-6xl mb-4 animate-bounce">⏳</div>
           <h3 className="text-2xl font-bold gradient-text">Discovering amazing blogs...</h3>
         </div>

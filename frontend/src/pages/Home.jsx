@@ -31,7 +31,7 @@ export default function Home(){
   return (
     <div className="space-y-4 pb-8">
       {/* Hero Section */}
-      <div className="card p-6 md:p-8 text-center shadow-glow float">
+      <div className="card p-6 md:p-8 text-center shadow-glow">
         <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-3">
           Welcome to NovaBlog ✨
         </h1>
@@ -103,7 +103,7 @@ export default function Home(){
             </p>
           </div>
 
-          <div className="card p-4 shadow-colorful float">
+          <div className="card p-4 shadow-colorful">
             <h3 className="text-lg font-bold gradient-text mb-3">📊 Stats</h3>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -125,4 +125,5 @@ export default function Home(){
     </div>
   )
 }
+
 
