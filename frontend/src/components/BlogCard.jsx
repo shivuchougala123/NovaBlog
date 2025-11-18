@@ -47,9 +47,7 @@ export default function BlogCard({ blog }) {
             className="w-full h-60 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500" 
           />
         ) : (
-          <div className="w-full h-40 bg-gradient-soft flex items-center justify-center text-sm text-gray-700 rounded-2xl font-semibold">
-            🎨 No image
-          </div>
+          <div className="w-full h-40 bg-gray-100 rounded-2xl"></div>
         )}
         <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-gray-700 font-semibold">
           {timeAgo}

@@ -39,7 +39,7 @@ export default function SignIn(){
 
   return (
     <div className="max-w-md mx-auto mt-12">
-      <div className="card p-8 space-y-6 shadow-colorful float">
+      <div className="card p-8 space-y-6 shadow-colorful">
         <div className="text-center">
           <h2 className="text-3xl font-bold gradient-text mb-2">Welcome Back! ✨</h2>
           <p className="text-gray-600">Sign in to continue your journey</p>

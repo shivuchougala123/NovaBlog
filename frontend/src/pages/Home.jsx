@@ -27,6 +27,10 @@ export default function Home(){
   const uniqueTags = [...new Set(tags)];
   const tag_3 = [uniqueTags[0],uniqueTags[1],uniqueTags[2]];
   
+  // Calculate stats
+  const totalViews = blogs.reduce((sum, blog) => sum + (blog.views || 0), 0)
+  const uniqueWriters = new Set(blogs.map(b => b.userId?._id || b.userId)).size
+  
 
   return (
     <div className="space-y-4 pb-8">
@@ -112,11 +116,11 @@ export default function Home(){
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 text-sm">Active Writers</span>
-                <span className="text-xl font-bold text-accent-light">..</span>
+                <span className="text-xl font-bold text-accent-light">{uniqueWriters}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 text-sm">Total Views</span>
-                <span className="text-xl font-bold text-accent-dark">..</span>
+                <span className="text-xl font-bold text-accent-dark">{totalViews}</span>
               </div>
             </div>
           </div>

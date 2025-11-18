@@ -34,7 +34,7 @@ export default function SignUp(){
 
   return (
     <div className="max-w-md mx-auto mt-12">
-      <div className="card p-8 space-y-6 shadow-glow float">
+      <div className="card p-8 space-y-6 shadow-glow">
         <div className="text-center">
           <h2 className="text-3xl font-bold gradient-text mb-2">Join NovaBlog! 🎨</h2>
           <p className="text-gray-600">Start your creative journey today</p>
