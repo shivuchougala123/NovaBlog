@@ -15,16 +15,38 @@ const app = express()
 
 // Enable CORS for your deployed frontend.
 // Read allowed frontend origin from env so deployments can configure it.
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://novablog-1.onrender.com'
-app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true
-}))
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://novablog-1.onrender.com",
+  "https://novablog.onrender.com"
+];
 
-console.log('Allowing CORS requests from:', FRONTEND_URL)
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // dev only
+
+    if (allowedOrigins.some(o => origin.startsWith(o)))
+      return callback(null, true);
+
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+}));
+
+app.options("*", cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+
+
+
+
+// console.log('Allowing CORS requests from:', FRONTEND_URL)
 
 // Parse JSON request bodies
-app.use(express.json())
+// app.use(express.json())
 
 // Environment variables
 const PORT = process.env.PORT || 4000
